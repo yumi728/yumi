@@ -2,7 +2,9 @@
 import math
 import os
 
-from PIL import Image, ImageDraw, ImageFilter
+import json
+
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 OUT = os.path.join(os.path.dirname(__file__), "assets")
 W, H = 1920, 1080
@@ -65,16 +67,39 @@ def deco_line():
     return img.resize((w // s, h // s), Image.LANCZOS)
 
 
-def gold_dot(r):
-    s = 4
-    img = Image.new("RGBA", (r * 2 * s, r * 2 * s), (0, 0, 0, 0))
-    ImageDraw.Draw(img).ellipse([0, 0, r * 2 * s - 1, r * 2 * s - 1],
-                                fill=hex_rgb("F5DE81") + (255,))
-    return img.resize((r * 2, r * 2), Image.LANCZOS)
+FONT_DIRS = [os.path.join(os.path.dirname(__file__), "fonts"), os.path.expanduser("~/.fonts")]
+
+
+def script_word(word, size=240):
+    # 筆記体（Allura）の英単語を画像にする。フォントのないPCでも崩れないように
+    font_path = next(os.path.join(d, "Allura-Regular.ttf") for d in FONT_DIRS
+                     if os.path.exists(os.path.join(d, "Allura-Regular.ttf")))
+    font = ImageFont.truetype(font_path, size)
+    pad = size // 3
+    l, t, r, b = font.getbbox(word)
+    img = Image.new("RGBA", (r - l + pad * 2, b - t + pad * 2), (0, 0, 0, 0))
+    ImageDraw.Draw(img).text((pad - l, pad - t), word, font=font, fill=hex_rgb("897D74") + (255,))
+    return img.crop(img.getbbox())
+
+
+SCRIPT_WORDS = {
+    "communication": "Communication", "agenda": "Agenda", "work": "Work", "end": "END",
+    **{f"chapter{n:02d}": f"Chapter {n:02d}" for n in range(1, 14)},
+    **{f"step{n}": f"Step {n}" for n in range(1, 4)},
+}
 
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)
     gradient().filter(ImageFilter.GaussianBlur(2)).save(os.path.join(OUT, "bg-gradient.png"))
     deco_line().save(os.path.join(OUT, "deco-line.png"))
+    g = Image.open(os.path.join(OUT, "bg-gradient.png"))
+    g.crop((0, 0, 560, H)).save(os.path.join(OUT, "bg-band.png"))
+    sizes = {}
+    for key, word in SCRIPT_WORDS.items():
+        img = script_word(word)
+        img.save(os.path.join(OUT, f"script-{key}.png"))
+        sizes[key] = img.size
+    with open(os.path.join(OUT, "script-sizes.json"), "w") as f:
+        json.dump(sizes, f, indent=1)
     print("ok")
