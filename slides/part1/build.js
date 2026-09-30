@@ -1,13 +1,15 @@
 // 第一部スライド（seminar-part1.pptx）の生成スクリプト
 // デザインは .claude/skills/voice-deck の規定に従う。座標は 1920×1080px 基準で書き、px() でインチに直す。
-// 使い方：node build.js          （全スライド）
+// 使い方：node build.js          （全スライド → seminar-part1.pptx）
 //         node build.js sample   （確認用：スライド2・26・28だけ）
+//         node build.js web <dir> （claude.ai の Slides 形式のファイルを <dir>/project/ に書き出す）
 const fsys = require("fs");
 const path = require("path");
 const pptxgen = require("pptxgenjs");
 const JSZip = require("jszip");
 
 const MODE = process.argv[2] || "full";
+const WEB = MODE === "web";
 const ASSETS = path.join(__dirname, "assets");
 const OUT = path.join(__dirname, MODE === "sample" ? "seminar-part1-sample.pptx" : "seminar-part1.pptx");
 const SCRIPT_SIZES = JSON.parse(fsys.readFileSync(path.join(ASSETS, "script-sizes.json"), "utf8"));
@@ -32,14 +34,21 @@ const C = {
   white: "FFFFFF",
 };
 // 書体：游明朝（Windows・Mac の両方に標準で入っている）。太字は bold で指定する
-const F = {
-  heavy: { face: "游明朝", bold: true },
-  semi: { face: "游明朝", bold: true },
-  reg: { face: "游明朝", bold: false },
-};
+// Slides 形式（web）では、Google Fonts の Shippori Mincho B1 を太さ別に使う
+const F = WEB
+  ? {
+    heavy: { face: "Shippori Mincho B1", bold: true, weight: 800 },
+    semi: { face: "Shippori Mincho B1", bold: true, weight: 600 },
+    reg: { face: "Shippori Mincho B1", bold: false, weight: 400 },
+  }
+  : {
+    heavy: { face: "游明朝", bold: true },
+    semi: { face: "游明朝", bold: true },
+    reg: { face: "游明朝", bold: false },
+  };
 
-const pres = new pptxgen();
-pres.layout = "LAYOUT_WIDE";
+const pres = WEB ? new (require("./web").WebPres)() : new pptxgen();
+if (!WEB) pres.layout = "LAYOUT_WIDE";
 pres.title = "心を掴んで“離さない”極意（第一部）";
 
 // ---- 文字 ----
@@ -63,7 +72,9 @@ function runs(str, base) {
 
 function baseRun(o) {
   const f = o.font || F.reg;
-  return { fontFace: f.face, bold: f.bold, fontSize: fs(o.size || 32), color: o.color || C.body, lang: "ja-JP" };
+  const r = { fontFace: f.face, bold: f.bold, fontSize: fs(o.size || 32), color: o.color || C.body, lang: "ja-JP" };
+  if (WEB) r.weight = f.weight;
+  return r;
 }
 
 function boxOpts(o) {
@@ -382,6 +393,7 @@ function s01() {
 }
 
 function door(n, name, ch, body) {
+  if (WEB && n !== 1) pres.markSection(name);
   const s = chapter(`chapter${String(n).padStart(2, "0")}`, name);
   note(s, ch, `（章扉）\n${body}`);
 }
@@ -835,6 +847,7 @@ function s38() {
 
 // ---- 組み立て ----
 function buildFull() {
+  if (WEB) pres.markSection("今日のゴールと3つのお約束");
   s01();
   door(1, "今日のゴールと3つのお約束", 1, "・今日のゴール：頑張って「話す」を手放す／「心を掴む」コミュニケーションを知る／明日からの人間関係が楽しみになる\n・3つのお約束：否定しない・ジャッジしない／ここだけの話／時間を意識");
   s02(); s03(); s04();
@@ -862,6 +875,7 @@ function buildFull() {
   s29(); s30(); s31(); s32();
   door(13, "まとめと、このあとの実践ワーク", 13, "・今日の道具：うなずき、相槌、受容ワード、KMB");
   s33(); s34(); s35();
+  if (WEB) pres.markSection("実践ワーク：聞き上手を体験しよう");
   const w = chapter("work", "実践ワーク：聞き上手を体験しよう");
   note(w, "W", "（章扉）\n・1回目：話し手と聞き手に分かれる／交代／締め");
   s36(); s37(); s38();
@@ -885,4 +899,9 @@ if (MODE === "sample") {
 } else {
   buildFull();
 }
-save();
+if (WEB) {
+  const deck = pres.writeProject(process.argv[3], "心を掴んで“離さない”極意（第一部）");
+  console.log("wrote web project:", deck.order.length, "slides,", Object.keys(deck.sections).length, "sections");
+} else {
+  save();
+}
