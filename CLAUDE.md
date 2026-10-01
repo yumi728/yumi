@@ -15,9 +15,17 @@
 
 - `knowledge/storyboard.md`：ペルソナ、悩み、思い込み、新常識、理想／最悪の未来、変化の3ステップ
 - `knowledge/reel-script.md`：旗印（旧常識／新常識）、伸びた投稿の勝ちパターン、台本の4ルール
-- `knowledge/reel-structure.md`：リール構成の型、フックの4つの切り口と作り方
+- `knowledge/reel-structure.md`：リール構成の型、伸びたリールの擦り方、台本へのフィードバック
+- `knowledge/hook-patterns.md`：フックの4切り口（常識破壊／ネガティブ訴求／短期的快楽／感情爆発）の型、組み合わせ、チェックリスト
 - `knowledge/paradigm-shift.md`：新常識を5層で掘る手順と、掘った結果（行動・指標の具体例）
-- `knowledge/account-strategy.md`：導線（プロフィール → LINE）、リサーチ対象の選び方、テーマのテスト
+- `knowledge/account-strategy.md`：導線（リール → プロフィール → 3連バナー → LINE → 個別相談）、プロフィールの作り方、LINE 誘導、リサーチ対象の選び方
+
+## 外部資料（Google ドライブ。必要なときに Google Drive コネクタで読む）
+
+- 門口さんのリール台本 411本「『常時資料更新』リール台本」：`1UN0XVKlgtgXEzVoNMVhGCFNs6n6Zchjbb6DsrvlwPCU`（常に更新されるのでコピーせず、毎回元を読む）
+- 門口さんリール分解（冒頭フック4分類マップ）：`1e3tFRU4CdGUlo40IhqtUKnt2d6CFizSVGJ23Y70Oh8A`
+
+フックを作るときは、411本の台本から同じ切り口・型の実例を探して参考にする。
 
 ## フォルダの使い方
 
