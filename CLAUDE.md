@@ -15,3 +15,12 @@
 
 - `knowledge/storyboard.md`：ペルソナ、悩み、思い込み、新常識、理想／最悪の未来、変化の3ステップ
 - `knowledge/reel-script.md`：旗印（旧常識／新常識）、伸びた投稿の勝ちパターン、台本の4ルール
+- `knowledge/reel-structure.md`：リール構成の型、フックの4つの切り口と作り方
+- `knowledge/paradigm-shift.md`：新常識を5層で掘る手順と、掘った結果（行動・指標の具体例）
+- `knowledge/account-strategy.md`：導線（プロフィール → LINE）、リサーチ対象の選び方、テーマのテスト
+
+## フォルダの使い方
+
+- `sessions/`：コンサル1回ごとの記録（`YYYY-MM-DD.md`）
+- `knowledge/`：テーマ別に整理したノウハウ。コンサルで新しく聞いたことは、該当ページに日付つきで追記する
+- `tasks.md`：やることリスト。コンサルの宿題はここに出どころの日付つきで登録する
